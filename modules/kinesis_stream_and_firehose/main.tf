@@ -1,21 +1,21 @@
-resource "aws_kinesis_stream" "example" {
+resource "aws_kinesis_stream" "example-stream" {
   name = var.stream_name
   shard_count = 1
 }
 
-resource "aws_kinesis_firehose_delivery_stream" "example" {
+resource "aws_kinesis_firehose_delivery_stream" "example-firehouse" {
   name = var.firehose_name
   destination = "s3"
   s3_configuration {
-    bucket_arn = aws_s3_bucket.example.arn
+    bucket_arn = aws_s3_bucket.example-s3.arn
     prefix = "kinesis-data"
   }
 }
-resource "aws_s3_bucket" "example" {
+resource "aws_s3_bucket" "example-s3" {
   bucket = var.s3_bucket_name
 }
 
-resource "aws_iam_role" "example" {
+resource "aws_iam_role" "example-role" {
   name = "kinesis_firehose_role"
 
   assume_role_policy = <<EOF
@@ -34,7 +34,7 @@ resource "aws_iam_role" "example" {
 EOF
 }
 
-resource "aws_iam_policy" "example" {
+resource "aws_iam_policy" "example-policy" {
   name = "kinesis_firehose_policy"
   policy = <<EOF
 {
@@ -60,7 +60,7 @@ resource "aws_iam_policy" "example" {
 EOF
 }
 
-resource "aws_iam_role_policy_attachment" "example" {
-  role = aws_iam_role.example.name
-  policy_arn = aws_iam_policy.example.arn
+resource "aws_iam_role_policy_attachment" "example-attachemnt" {
+  role = aws_iam_role.example-role.name
+  policy_arn = aws_iam_policy.example-policy.arn
 }
