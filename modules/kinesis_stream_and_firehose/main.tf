@@ -51,8 +51,8 @@ resource "aws_iam_policy" "example-policy" {
         "s3:PutObject"
       ],
       "Resource": [
-        "${aws_s3_bucket.example.arn}",
-        "${aws_s3_bucket.example.arn}/*"
+        "${aws_s3_bucket.example-s3.arn}",
+        "${aws_s3_bucket.example-s3.arn}/*"
       ]
     }
   ]
