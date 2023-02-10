@@ -1,0 +1,32 @@
+provider "helm" {
+  kubernetes {
+    // enter the relevant authentication
+  }
+}
+
+resource "kubernetes_namespace" "istio-system" {
+  metadata {
+    name = "istio-system"
+  }
+}
+
+resource "helm_release" "istio" {
+  repository       = local.istio_charts_url
+  chart            = "istio"
+  name             = "istio"
+  namespace        = kubernetes_namespace.istio-system.metadata.name
+  version          = "1.12.1"
+  create_namespace = true
+  set {
+    name  = "global.istioNamespace"
+    value = kubernetes_namespace.istio-system.metadata.name
+  }
+  values = [
+    "global.controlPlaneSecurityEnabled=true",
+    "sidecarInjectorWebhook.enabled=true",
+    "security.enabled=true",
+    "gateways.istio-ingressgateway.type=NodePort",
+  ]
+
+  wait = true
+}
