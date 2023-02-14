@@ -1,0 +1,21 @@
+# Azure Pipeline YAML file
+
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: AWSToolkit.aws-toolkit.AWS-Toolkit@1
+  inputs:
+    awsCredentials: '<aws-credentials-name>'
+    awsRegion: '<aws-region>'
+    toolType: 'PowerShell'
+  displayName: 'AWS Toolkit'
+
+- script: |
+    git clone <repository-url>
+    cd <repository-folder>
+    aws s3 cp <archive-file>.zip s3://<bucket-name>/<object-key>.zip
+  displayName: 'Upload Lex archive to S3'
