@@ -1,0 +1,39 @@
+name: '$(BuildDefinitionName).$(Date:yyyyMMdd).$(Rev:r)-$(Build.SourceBranchName)'
+trigger: none
+
+pool:Geico Agents
+
+parameters:
+- name: IsPlanOnly
+  displayName: 'Submit Plan Only?'
+  type: boolean
+  default: false
+- name: IsDestroy
+  displayName: 'Destroy All Resources?'
+  type: boolean
+  default: false
+  
+resources:
+  repositories:
+    - repository: <Repository name>
+      type: git
+      name: <name>
+      ref: <Branch name>
+      
+      
+stages:
+- template: tfc-plan-apply.tpl.yml@templates
+  parameters:
+    serviceConnection: 'aws-telecom-sandbox-automation'
+    adoEnvironment: 'Sandbox'
+    configurationDirectory: $(Build.SourcesDirectory)/main/aws
+    workspaceName: <workspace name>
+    varFile: <varfile source>
+    planOnly: ${{ parameters.IsPlanOnly }}
+    isDestroy: ${{ parameters.IsDestroy }}
+    PreJobCustomSteps:
+      - checkout: self
+        path: <Path>
+      - checkout: <Source IAM modules>
+        path: <Path>
+      
